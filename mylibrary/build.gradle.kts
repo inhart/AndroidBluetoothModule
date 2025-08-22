@@ -7,10 +7,13 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 29
 
+        minSdk = 21
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk = 29
+        signingConfig = signingConfigs.getByName("debug")
     }
 
     buildTypes {
@@ -26,6 +29,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    buildToolsVersion = "36.0.0"
 }
 
 dependencies {

@@ -29,6 +29,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    dependenciesInfo {
+        includeInBundle = true
+    }
+    buildToolsVersion = "36.0.0"
 }
 
 dependencies {
