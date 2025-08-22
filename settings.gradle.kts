@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Mimodulo"
 include(":app")
 include(":mylibrary")
+include(":myunitymodule")
