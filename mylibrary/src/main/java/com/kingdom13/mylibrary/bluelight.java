@@ -16,7 +16,7 @@ import androidx.annotation.RequiresPermission;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyUnityModule {
+public class bluelight {
 
     private static BluetoothAdapter bluetoothAdapter;
     private static BluetoothLeScanner bleScanner;
