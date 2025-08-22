@@ -18,6 +18,8 @@ import android.util.Log;
 import androidx.annotation.RequiresPermission;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,8 +31,12 @@ public class bluelight {
     private static BluetoothAdapter bluetoothAdapter;
     private static BluetoothLeScanner bleScanner;
     private static final List<String> devices = new ArrayList<>();
+    private static OutputStream outputStream;
+    private static InputStream inputStream;
 
-    private static final UUID UUID = java.util.UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static BluetoothSocket socket;
+
+    private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
     private static BluetoothSocket bluetoothSocket;
     // Inicializar Bluetooth
@@ -45,6 +51,22 @@ public class bluelight {
         bleScanner = bluetoothAdapter.getBluetoothLeScanner();
         return true;
     }
+
+
+    public static boolean connect(String macAddress) {
+        try {
+            BluetoothDevice device = bluetoothAdapter.getRemoteDevice(macAddress);
+            socket = device.createRfcommSocketToServiceRecord(SPP_UUID);
+            socket.connect();
+            outputStream = socket.getOutputStream();
+            inputStream = socket.getInputStream();
+            return true;
+        } catch (IOException e) {
+            Log.e("MyUnityModule", "Error al conectar: " + e.getMessage());
+            return false;
+        }
+    }
+
 
     // Comprobar si el Bluetooth está encendido
     public static boolean isBluetoothEnabled() {
@@ -80,14 +102,14 @@ public class bluelight {
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
-    public static void connect(String deviceAddress){
+    public static void connecToMac(String deviceAddress){
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
         if (device == null) {
             Log.e(TAG, "Dispositivo no encontrado.");
             return;
         }
 else try {
-            BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UUID);
+            BluetoothSocket socket = device.createRfcommSocketToServiceRecord(SPP_UUID);
             socket.connect();
             Log.i(TAG, "Conectado");
         } catch (IOException e) {
@@ -96,17 +118,37 @@ else try {
         }
     }
 
-    private static void disconnect() {
-        if (bluetoothSocket != null) {
-            try {
-                bluetoothSocket.close();
-                Log.i(TAG, "Desconectado");
-            } catch (IOException e) {
-                Log.e(TAG, "Error al desconectar: " + e.getMessage());
-            }
-        }
+
+    public static void disconnect() {
+        try {
+            if (socket != null) socket.close();
+        } catch (IOException ignored) {}
     }
 
+    public static boolean sendData(String data) {
+        try {
+            if (outputStream != null) {
+                outputStream.write(data.getBytes());
+                return true;
+            }
+        } catch (IOException e) {
+            Log.e("MyUnityModule", "Error al enviar datos: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public static String receiveData() {
+        try {
+            if (inputStream != null) {
+                byte[] buffer = new byte[1024];
+                int bytes = inputStream.read(buffer);
+                return new String(buffer, 0, bytes);
+            }
+        } catch (IOException e) {
+            Log.e("MyUnityModule", "Error al recibir datos: " + e.getMessage());
+        }
+        return "";
+    }
     public static boolean pairDevice(String deviceAddress) {
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
         if (device == null) {
