@@ -12,8 +12,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         //noinspection ExpiredTargetSdkVersion
-        targetSdk = 29
+
         signingConfig = signingConfigs.getByName("debug")
+
+
+
     }
 
     buildTypes {
@@ -26,11 +29,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildToolsVersion = "36.0.0"
+
 }
 
 dependencies {
