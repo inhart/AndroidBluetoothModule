@@ -52,16 +52,18 @@ public class BlueLight {
 
     // Detener escaneo
     @JvmStatic
-    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
+    @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT})
     public static void stopScan() {
         bleScanner.stopScan(new ScanCallback() {});
+
+        bluetoothAdapter.getBluetoothLeScanner().stopScan(new ScanCallback() {});
+
     }
 
     public static boolean isBluetoothEnabled(){
         return bluetoothAdapter.isEnabled();
     }
     // Conectar a un dispositivo
-    @JvmStatic
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public static void connect(Context context, String macAddress) {
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(macAddress);
@@ -112,6 +114,8 @@ public class BlueLight {
         if (bluetoothGatt != null) {
             bluetoothGatt.disconnect();
             bluetoothGatt.close();
+
+
         }
     }
 }
