@@ -2,6 +2,8 @@ package com.kingdom13.mylibrary;
 
 import static android.content.ContentValues.TAG;
 
+
+
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -31,8 +33,8 @@ public class bluelight {
     private static BluetoothAdapter bluetoothAdapter;
     private static BluetoothLeScanner bleScanner;
     private static final List<String> devices = new ArrayList<>();
-    private static OutputStream outputStream;
-    private static InputStream inputStream;
+    public static OutputStream outputStream;
+    public static InputStream inputStream;
 
     private static BluetoothSocket socket;
 
@@ -52,103 +54,6 @@ public class bluelight {
         return true;
     }
 
-
-    public static boolean connect(String macAddress) {
-        try {
-            BluetoothDevice device = bluetoothAdapter.getRemoteDevice(macAddress);
-            socket = device.createRfcommSocketToServiceRecord(SPP_UUID);
-            socket.connect();
-            outputStream = socket.getOutputStream();
-            inputStream = socket.getInputStream();
-            return true;
-        } catch (IOException e) {
-            Log.e("MyUnityModule", "Error al conectar: " + e.getMessage());
-            return false;
-        }
-    }
-
-
-    // Comprobar si el Bluetooth está encendido
-    public static boolean isBluetoothEnabled() {
-        return bluetoothAdapter != null && bluetoothAdapter.isEnabled();
-    }
-
-    // Escanear dispositivos BLE
-    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
-    @JvmStatic
-    public static void startScan() {
-        if (bleScanner == null) {
-            Log.e("MyUnityModule", "BLE Scanner no disponible.");
-            return;
-        }
-        devices.clear();
-        bleScanner.startScan(scanCallback);
-        Log.d("MyUnityModule", "Escaneo BLE iniciado...");
-    }
-
-    // Detener escaneo BLE
-    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
-    @JvmStatic
-    public static void stopScan() {
-        if (bleScanner != null) {
-            bleScanner.stopScan(scanCallback);
-            Log.d("MyUnityModule", "Escaneo BLE detenido.");
-        }
-    }
-
-    // Obtener lista de dispositivos encontrados
-    public static String[] getFoundDevices() {
-        return devices.toArray(new String[0]);
-    }
-
-    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
-    public static void connecToMac(String deviceAddress){
-        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
-        if (device == null) {
-            Log.e(TAG, "Dispositivo no encontrado.");
-            return;
-        }
-else try {
-            BluetoothSocket socket = device.createRfcommSocketToServiceRecord(SPP_UUID);
-            socket.connect();
-            Log.i(TAG, "Conectado");
-        } catch (IOException e) {
-            Log.e(TAG, "Error al conectar: " + e.getMessage());
-
-        }
-    }
-
-
-    public static void disconnect() {
-        try {
-            if (socket != null) socket.close();
-        } catch (IOException ignored) {}
-    }
-
-    public static boolean sendData(String data) {
-        try {
-            if (outputStream != null) {
-                outputStream.write(data.getBytes());
-                return true;
-            }
-        } catch (IOException e) {
-            Log.e("MyUnityModule", "Error al enviar datos: " + e.getMessage());
-        }
-        return false;
-    }
-
-    public static String receiveData() {
-        try {
-            if (inputStream != null) {
-                byte[] buffer = new byte[1024];
-                int bytes = inputStream.read(buffer);
-                return new String(buffer, 0, bytes);
-            }
-        } catch (IOException e) {
-            Log.e("MyUnityModule", "Error al recibir datos: " + e.getMessage());
-        }
-        return "";
-    }
     public static boolean pairDevice(String deviceAddress) {
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
         if (device == null) {
@@ -183,9 +88,103 @@ else try {
             }
         }
 
+    }
+
+    public static void connect(String macAddress) {
+        try {
+            BluetoothDevice device = bluetoothAdapter.getRemoteDevice(macAddress);
+            socket = device.createRfcommSocketToServiceRecord(SPP_UUID);
+            socket.connect();
+            outputStream = socket.getOutputStream();
+            inputStream = socket.getInputStream();
+
+        } catch (IOException e) {
+            Log.e("MyUnityModule", "Error al conectar: " + e.getMessage());
+
+        }
+    }
+
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    public static void connectToMac(String deviceAddress){
+        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
+        device.createBond();
+        try {
+            BluetoothSocket socket = device.createRfcommSocketToServiceRecord(SPP_UUID);
+            socket.connect();
+            Log.i(TAG, "Conectado");
+
+        } catch (IOException e) {
+            Log.e(TAG, "Error al conectar: " + e.getMessage());
+
+        }
+
+    }
+    // Comprobar si el Bluetooth está encendido
+    public static boolean isBluetoothEnabled() {
+        return bluetoothAdapter != null && bluetoothAdapter.isEnabled();
+    }
+
+    // Escanear dispositivos BLE
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
+    @JvmStatic
+    public static void startScan() {
+        if (bleScanner == null) {
+            Log.e("MyUnityModule", "BLE Scanner no disponible.");
+            return;
+        }
+        devices.clear();
+        bleScanner.startScan(scanCallback);
+        Log.d("MyUnityModule", "Escaneo BLE iniciado...");
+    }
+
+    // Detener escaneo BLE
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
+    @JvmStatic
+    public static void stopScan() {
+        if (bleScanner != null) {
+            bleScanner.stopScan(scanCallback);
+            Log.d("MyUnityModule", "Escaneo BLE detenido.");
+        }
+    }
+
+    // Obtener lista de dispositivos encontrados
+    public static String[] getFoundDevices() {
+        return devices.toArray(new String[0]);
+    }
 
 
 
+
+    public static void disconnect() {
+        try {
+            if (socket != null) socket.close();
+        } catch (IOException ignored) {}
+    }
+
+    public static boolean sendData(String data) {
+        try {
+            if (outputStream != null) {
+                outputStream.write(data.getBytes());
+                return true;
+            }
+        } catch (IOException e) {
+            Log.e("MyUnityModule", "Error al enviar datos: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public static String receiveData() {
+        try {
+            if (inputStream != null) {
+                byte[] buffer = new byte[1024];
+                int bytes = inputStream.read(buffer);
+                return new String(buffer, 0, bytes);
+            }
+        } catch (IOException e) {
+            Log.e("MyUnityModule", "Error al recibir datos: " + e.getMessage());
+        }
+        return "";
     }
 
     private static final ScanCallback scanCallback = new ScanCallback() {
@@ -193,7 +192,7 @@ else try {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             BluetoothDevice device = result.getDevice();
-            String info = device.getName() + " - " + device.getAddress();
+            String info = device.getAddress();
             if (!devices.contains(info)) {
                 devices.add(info);
                 Log.d("MyUnityModule", "Dispositivo encontrado: " + info);

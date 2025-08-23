@@ -5,11 +5,14 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.RequiresPermission;
+
+import java.util.List;
 
 public class BluetoothPlugin {
     private static Context unityContext;
@@ -69,26 +72,31 @@ public class BluetoothPlugin {
         }
     };
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     public static void startBLEScan() {
         if (bluetoothAdapter != null) {
             BluetoothLEManager.startScan(bleCallback);
         }
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     public static void stopBLEScan() {
         if (bluetoothAdapter != null) {
             BluetoothLEManager.stopScan(bleCallback);
         }
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public static void connectBLE(String macAddress) {
         BluetoothLEManager.connect(unityContext, macAddress, gattCallback);
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public static void disconnectBLE() {
         BluetoothLEManager.disconnect();
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public static boolean writeBLE(byte[] data) {
         return BluetoothLEManager.writeData(data);
     }
@@ -100,7 +108,7 @@ public class BluetoothPlugin {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Log.d("BluetoothPlugin", "Connected to GATT server");
-                gatt.discoverServices();
+                List<BluetoothGattService> services = gatt.getServices();;
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.d("BluetoothPlugin", "Disconnected from GATT server");
             }
