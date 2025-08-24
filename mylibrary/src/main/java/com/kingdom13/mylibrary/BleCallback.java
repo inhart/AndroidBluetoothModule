@@ -1,31 +1,58 @@
-package com.kingdom13.mylibrary;
-
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 
-import java.util.List;
+public static BleCallback bleCallback = null;
 
-public interface BleCallback {
-    void onConnectionStateChange(BluetoothGatt gatt, int status, int newState);
-    void onServicesDiscovered(BluetoothGatt gatt, int status);
-
-    void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status);
-    void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status);
-    void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic);
-
-    void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status);
-    void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status);
-
-    void onMtuChanged(BluetoothGatt gatt, int mtu, int status);
-
-    void onScanResult(String name, String address);
-
-    void onConnected(String macAddress);
-
-    void onDisconnected(String macAddress);
-
-    void onCharacteristicChanged(String string, String string1, byte[] value);
-
-    void onServicesDiscovered(List<String> uuids);
+public void  setBleCallback(BleCallback callback) {
+    this.bleCallback = callback;
 }
+
+private final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
+    @Override
+    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+        if (bleCallback != null) {
+            bleCallback.onConnectionStateChange(gatt, status, newState);
+        }
+    }
+
+    @Override
+    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+        if (bleCallback != null) {
+            bleCallback.onServicesDiscovered(gatt, status);
+        }
+    }
+
+    @Override
+    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+        if (bleCallback != null) {
+            bleCallback.onCharacteristicRead(gatt, characteristic, status);
+        }
+    }
+
+    @Override
+    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+        if (bleCallback != null) bleCallback.onCharacteristicWrite(gatt, characteristic, status);
+    }
+
+    @Override
+    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        if (bleCallback != null) bleCallback.onCharacteristicChanged(gatt, characteristic);
+    }
+
+    @Override
+    public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+        if (bleCallback != null) bleCallback.onDescriptorRead(gatt, descriptor, status);
+    }
+
+    @Override
+    public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+        if (bleCallback != null) bleCallback.onDescriptorWrite(gatt, descriptor, status);
+    }
+
+    @Override
+    public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+        if (bleCallback != null) bleCallback.onMtuChanged(gatt, mtu, status);
+    }
+};

@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.library)
 }
@@ -29,18 +30,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+
     }
 
     buildToolsVersion = "36.0.0"
+    compileSdk = 36
+
 
 }
-
 dependencies {
 
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

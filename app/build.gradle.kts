@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.kingdom13.mimodulo"
-    compileSdk = 36
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.kingdom13.mimodulo"
