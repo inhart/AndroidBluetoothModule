@@ -36,7 +36,7 @@ android {
     }
 
     buildToolsVersion = "36.0.0"
-    compileSdk = 36
+
 
 
 }
@@ -45,7 +45,9 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.firebase.firestore)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }
