@@ -8,12 +8,10 @@ android {
 
     defaultConfig {
         applicationId = "com.kingdom13.mimodulo"
-        minSdk = 29
+        minSdk = 21
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -33,7 +31,8 @@ android {
     dependenciesInfo {
         includeInBundle = true
     }
-    buildToolsVersion = "36.0.0"
+
+
 }
 
 dependencies {

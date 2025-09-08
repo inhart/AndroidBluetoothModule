@@ -12,8 +12,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         //noinspection ExpiredTargetSdkVersion
-        targetSdk = 29
-        signingConfig = signingConfigs.getByName("debug")
+        //signingConfig = signingConfigs.getByName("debug")
+
     }
 
     buildTypes {
@@ -23,14 +23,21 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            isJniDebuggable = true
+       
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildToolsVersion = "36.1.0 rc1"
+    ndkVersion = "29.0.13846066 rc3"
 
-    buildToolsVersion = "36.0.0"
+    //buildToolsVersion = "36.0.0"
+
+    //ndkVersion = "29.0.13846066 rc3"
 }
 
 dependencies {
